@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fullness Factor</title>
+    <style>
+      .container {
+        margin: auto;
+        margin-top: 50px;
+        width: 640px;
+        display: flex;
+        flex-direction: column;
+        font-family: "Helvetica", "Arial", sans-serif;
+        color: #333333;
+      }
+
+      .per-100-g {
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .container .input-wrapper {
+        flex: 1;
+        display: flex;
+        margin-bottom: 10px;
+      }
+
+      .container .input-wrapper p {
+        width: 125px;
+        font-size: 20px;
+      }
+
+      .container .input-wrapper p:first-child {
+        text-align: right;
+        margin-right: 25px;
+      }
+
+      .container .input-wrapper p:nth-child(3) {
+        text-align: left;
+        margin-left: 25px;
+      }
+
+      .container .input-wrapper input {
+        flex: 1;
+        font-size: 24px;
+        text-align: center;
+        font-family: "Barlow", sans-serif;
+      }
+
+      .container .big-ff {
+        text-align: center;
+        font-size: 60px;
+        height: 200px;
+      }
+
+      .container .examples {
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .container .examples p {
+        margin: 10px;
+      }
+
+      .container .examples p:first-child {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="per-100-g">
+        <p>Per 100 g</p>
+      </div>
+      <div class="input-wrapper">
+        <p>Energi (kcal):</p>
+        <input id="cal" value="" />
+        <p id="cal-score"></p>
+      </div>
+      <div class="input-wrapper">
+        <p>Fedt (g):</p>
+        <input id="tf" value="" />
+        <p id="tf-score"></p>
+      </div>
+      <div class="input-wrapper">
+        <p>Kostfibre (g):</p>
+        <input id="df" value="" />
+        <p id="df-score"></p>
+      </div>
+      <div class="input-wrapper">
+        <p>Protein (g):</p>
+        <input id="pr" value="" />
+        <p id="pr-score"></p>
+      </div>
+      <div class="big-ff">
+        <p id="fullness-factor"></p>
+      </div>
+      <div class="examples">
+        <p>Examples</p>
+        <p>Gulerødder: 4.59</p>
+        <p>Hamburgerryg: 3.20</p>
+        <p>Æg: 2.54</p>
+        <p>Ost: 2.36</p>
+        <p>Rugbrød: 2.17</p>
+        <p>Leverpostej: 2.13</p>
+        <p>Hvidt brød: 1.95</p>
+        <p>Vaniljeis: 1.78</p>
+        <p>Snickers: 1.51</p>
+        <p>Chips: 1.34</p>
+      </div>
+    </div>
+
+    <script>
+      const calElement = document.getElementById("cal");
+      const tfElement = document.getElementById("tf");
+      const dfElement = document.getElementById("df");
+      const prElement = document.getElementById("pr");
+
+      function calculateFullnessFactor() {
+        let calVal = parseFloat(calElement.value.replaceAll(",", ".")) || 0;
+        let tfVal = parseFloat(tfElement.value.replaceAll(",", ".")) || 0;
+        let dfVal = parseFloat(dfElement.value.replaceAll(",", ".")) || 0;
+        let prVal = parseFloat(prElement.value.replaceAll(",", ".")) || 0;
+
+        let calScore = 41.7 / calVal ** 0.7;
+        let tfScore = -1 * 7.25e-6 * tfVal ** 3;
+        let dfScore = 6.17e-4 * dfVal ** 3;
+        let prScore = 0.05 * prVal;
+        let bias = 0.617;
+
+        let ff = calScore + tfScore + dfScore + prScore + bias;
+
+        document.getElementById("cal-score").textContent =
+          isFinite(calScore) && calScore != 0 ? calScore.toFixed(2) : "";
+
+        document.getElementById("tf-score").textContent =
+          isFinite(tfScore) && tfScore != 0 ? tfScore.toFixed(2) : "";
+
+        document.getElementById("df-score").textContent =
+          isFinite(dfScore) && dfScore != 0 ? dfScore.toFixed(2) : "";
+
+        document.getElementById("pr-score").textContent =
+          isFinite(prScore) && prScore != 0 ? prScore.toFixed(2) : "";
+
+        document.getElementById("fullness-factor").textContent =
+          isFinite(ff) && ff != 0 ? ff.toFixed(2) : "";
+      }
+
+      calculateFullnessFactor();
+      calElement.addEventListener("keyup", calculateFullnessFactor);
+      tfElement.addEventListener("keyup", calculateFullnessFactor);
+      dfElement.addEventListener("keyup", calculateFullnessFactor);
+      prElement.addEventListener("keyup", calculateFullnessFactor);
+    </script>
+  </body>
+</html>
